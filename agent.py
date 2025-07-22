@@ -60,18 +60,29 @@ def search_file_content(file_path, search_string):
     except FileNotFoundError:
         return f"Error: File not found at {file_path}"
     except Exception as e:
-        return f"An error occurred: {e}"
+        return f"An unexpected error occurred while searching {file_path}: {e}"
 
 def run_shell_command(command):
     """Runs a shell command."""
-    result = subprocess.run(command, shell=True, capture_output=True, text=True)
-    return f"STDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}\nEXIT_CODE: {result.returncode}"
+    try:
+        result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
+        return f"STDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}\nEXIT_CODE: {result.returncode}"
+    except subprocess.CalledProcessError as e:
+        return f"Error executing command:\nSTDOUT:\n{e.stdout}\nSTDERR:\n{e.stderr}\nEXIT_CODE: {e.returncode}"
+    except Exception as e:
+        return f"An unexpected error occurred while running command: {e}"
 
 def web_search(query):
     """Performs a web search using DuckDuckGo."""
-    with DDGS() as ddgs:
-        results = [r for r in ddgs.text(query, max_results=5)]
-    return "\n".join([str(r) for r in results])
+    try:
+        with DDGS() as ddgs:
+            results = [r for r in ddgs.text(query, max_results=5)]
+        if not results:
+            return "No search results found."
+        return "\n".join([str(r) for r in results])
+    except Exception as e:
+        return f"An error occurred during web search: {e}"
+
 
 def create_directory(path):
     """Creates a new directory."""
