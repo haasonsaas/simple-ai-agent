@@ -1,5 +1,6 @@
 
 import os
+import shutil
 import subprocess
 from duckduckgo_search import DDGS
 import google.generativeai as genai
@@ -45,6 +46,24 @@ def web_search(query):
         results = [r for r in ddgs.text(query, max_results=5)]
     return "\n".join([str(r) for r in results])
 
+def create_directory(path):
+    """Creates a new directory."""
+    os.makedirs(path, exist_ok=True)
+    return f"Directory '{path}' created successfully."
+
+def move_file(source, destination):
+    """Moves or renames a file or directory."""
+    shutil.move(source, destination)
+    return f"Moved '{source}' to '{destination}'."
+
+def delete_file(path):
+    """Deletes a file or directory."""
+    if os.path.isdir(path):
+        shutil.rmtree(path)
+    else:
+        os.remove(path)
+    return f"Deleted '{path}'."
+
 tools = [
     list_files,
     read_file,
@@ -52,6 +71,9 @@ tools = [
     search_file_content,
     run_shell_command,
     web_search,
+    create_directory,
+    move_file,
+    delete_file,
 ]
 
 
