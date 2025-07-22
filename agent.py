@@ -3,6 +3,7 @@ import os
 import shutil
 import subprocess
 import requests
+import glob
 from duckduckgo_search import DDGS
 import google.generativeai as genai
 import PyPDF2
@@ -132,6 +133,10 @@ def run_python_code(code):
     except Exception as e:
         return f"An unexpected error occurred: {e}"
 
+def glob_files(pattern):
+    """Finds files matching a given glob pattern."""
+    return glob.glob(pattern)
+
 tools = [
     list_files,
     read_file,
@@ -148,6 +153,7 @@ tools = [
     format_code,
     lint_code,
     run_python_code,
+    glob_files,
 ]
 
 
