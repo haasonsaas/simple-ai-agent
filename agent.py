@@ -7,6 +7,7 @@ import glob
 import json
 import argparse
 import csv
+import xml.etree.ElementTree as ET
 from duckduckgo_search import DDGS
 import google.generativeai as genai
 import PyPDF2
@@ -264,6 +265,34 @@ def write_csv_file(file_path, data):
     except Exception as e:
         return f"An error occurred while writing CSV: {e}"
 
+def read_xml_file(file_path):
+    """Reads an XML file and returns its content as a string."""
+    try:
+        tree = ET.parse(file_path)
+        root = tree.getroot()
+        return ET.tostring(root, encoding='unicode')
+    except FileNotFoundError:
+        return f"Error: XML file not found at {file_path}"
+    except ET.ParseError as e:
+        return f"Error parsing XML file {file_path}: {e}"
+    except Exception as e:
+        return f"An error occurred while reading XML: {e}"
+
+def write_xml_file(file_path, content):
+    """Writes XML content to a file."""
+    try:
+        # If content is a string, parse it to ensure it's valid XML
+        if isinstance(content, str):
+            root = ET.fromstring(content)
+        else:
+            # Assume content is an ElementTree Element object
+            root = content
+        tree = ET.ElementTree(root)
+        tree.write(file_path, encoding='unicode', xml_declaration=True)
+        return f"XML data written successfully to {file_path}."
+    except Exception as e:
+        return f"An error occurred while writing XML: {e}"
+
 tools = [
     list_files,
     read_file,
@@ -295,6 +324,8 @@ tools = [
     generate_from_template,
     read_csv_file,
     write_csv_file,
+    read_xml_file,
+    write_xml_file,
 ]
 
 
