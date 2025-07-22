@@ -170,6 +170,18 @@ def write_json_file(file_path, content):
     except Exception as e:
         return f"An error occurred: {e}"
 
+def git_status():
+    """Returns the status of the Git repository."""
+    command = "git status"
+    result = run_shell_command(command)
+    return result
+
+def git_diff():
+    """Shows changes between commits, working tree, etc."""
+    command = "git diff"
+    result = run_shell_command(command)
+    return result
+
 tools = [
     list_files,
     read_file,
@@ -190,6 +202,8 @@ tools = [
     run_tests,
     read_json_file,
     write_json_file,
+    git_status,
+    git_diff,
 ]
 
 
