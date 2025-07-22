@@ -136,8 +136,10 @@ def read_pdf(file_path):
             return text
     except FileNotFoundError:
         return f"Error: PDF file not found at {file_path}"
+    except PyPDF2.utils.PdfReadError as e:
+        return f"Error reading PDF file {file_path}: {e}"
     except Exception as e:
-        return f"An error occurred while reading PDF: {e}"
+        return f"An unexpected error occurred while reading PDF: {e}"
 
 def fetch_url(url):
     """Fetches content from a given URL."""
@@ -145,6 +147,12 @@ def fetch_url(url):
         response = requests.get(url)
         response.raise_for_status()  # Raise an exception for HTTP errors
         return response.text
+    except requests.exceptions.MissingSchema:
+        return f"Error: Invalid URL schema for {url}. Did you mean http:// or https://?"
+    except requests.exceptions.ConnectionError as e:
+        return f"Error: Could not connect to {url}: {e}"
+    except requests.exceptions.Timeout:
+        return f"Error: Request to {url} timed out."
     except requests.exceptions.RequestException as e:
         return f"Error fetching URL {url}: {e}"
 
@@ -155,8 +163,12 @@ def change_directory(path):
         return f"Changed directory to {os.getcwd()}"
     except FileNotFoundError:
         return f"Error: Directory not found at {path}"
+    except NotADirectoryError:
+        return f"Error: {path} is not a directory."
+    except PermissionError:
+        return f"Error: Permission denied to change to directory {path}"
     except Exception as e:
-        return f"An error occurred: {e}"
+        return f"An unexpected error occurred while changing directory to {path}: {e}"
 
 def format_code(file_path):
     """Formats a Python code file using Black."""
