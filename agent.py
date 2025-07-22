@@ -389,7 +389,8 @@ def main():
         "**Response:** Once the task is complete, provide a clear, concise, and helpful answer to the user, summarizing the actions taken and the outcome.\n"
         "\n"
         "Available tools and their descriptions:\n"
-        "- `list_files(path=".")`: Lists files and directories in a given path.\n"
+        "- `list_files(path=".")`: Lists files and directories in a given path.
+"
         "- `read_file(path)`: Reads the content of a file.\n"
         "- `write_file(path, content)`: Writes content to a file.\n"
         "- `search_file_content(file_path, search_string)`: Searches for a string within a file and returns matching lines.\n"
