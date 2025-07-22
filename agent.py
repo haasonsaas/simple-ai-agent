@@ -4,6 +4,7 @@ import shutil
 import subprocess
 from duckduckgo_search import DDGS
 import google.generativeai as genai
+import PyPDF2
 
 # --- Tool Definitions ---
 
@@ -64,6 +65,20 @@ def delete_file(path):
         os.remove(path)
     return f"Deleted '{path}'."
 
+def read_pdf(file_path):
+    """Reads text content from a PDF file."""
+    try:
+        with open(file_path, 'rb') as file:
+            reader = PyPDF2.PdfReader(file)
+            text = ''
+            for page_num in range(len(reader.pages)):
+                text += reader.pages[page_num].extract_text()
+            return text
+    except FileNotFoundError:
+        return f"Error: PDF file not found at {file_path}"
+    except Exception as e:
+        return f"An error occurred while reading PDF: {e}"
+
 tools = [
     list_files,
     read_file,
@@ -74,6 +89,7 @@ tools = [
     create_directory,
     move_file,
     delete_file,
+    read_pdf,
 ]
 
 
