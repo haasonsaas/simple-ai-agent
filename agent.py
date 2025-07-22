@@ -4,6 +4,7 @@ import shutil
 import subprocess
 import requests
 import glob
+import json
 from duckduckgo_search import DDGS
 import google.generativeai as genai
 import PyPDF2
@@ -143,6 +144,32 @@ def run_tests(path):
     result = run_shell_command(command)
     return result
 
+def read_json_file(file_path):
+    """Reads a JSON file and returns its content as a Python dictionary."""
+    try:
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+        return json.dumps(data, indent=2) # Return as formatted JSON string
+    except FileNotFoundError:
+        return f"Error: JSON file not found at {file_path}"
+    except json.JSONDecodeError:
+        return f"Error: Invalid JSON format in {file_path}"
+    except Exception as e:
+        return f"An error occurred: {e}"
+
+def write_json_file(file_path, content):
+    """Writes a Python dictionary (or JSON string) to a JSON file."""
+    try:
+        with open(file_path, 'w') as f:
+            if isinstance(content, str):
+                data = json.loads(content) # Assume content is a JSON string
+            else:
+                data = content # Assume content is a Python dictionary
+            json.dump(data, f, indent=2)
+        return f"JSON data written successfully to {file_path}."
+    except Exception as e:
+        return f"An error occurred: {e}"
+
 tools = [
     list_files,
     read_file,
@@ -161,6 +188,8 @@ tools = [
     run_python_code,
     glob_files,
     run_tests,
+    read_json_file,
+    write_json_file,
 ]
 
 
