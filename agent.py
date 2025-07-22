@@ -182,6 +182,18 @@ def git_diff():
     result = run_shell_command(command)
     return result
 
+def git_add(path="."):
+    """Stages changes for the next commit."""
+    command = f"git add {path}"
+    result = run_shell_command(command)
+    return result
+
+def git_commit(message):
+    """Records changes to the repository with a message."""
+    command = f"git commit -m \"{message}\""
+    result = run_shell_command(command)
+    return result
+
 tools = [
     list_files,
     read_file,
@@ -204,6 +216,8 @@ tools = [
     write_json_file,
     git_status,
     git_diff,
+    git_add,
+    git_commit,
 ]
 
 
