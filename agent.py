@@ -340,6 +340,12 @@ def make_api_request(method, url, headers=None, data=None, json=None):
 
         response.raise_for_status()  # Raise an exception for HTTP errors
         return response.text
+    except requests.exceptions.MissingSchema:
+        return f"Error: Invalid URL schema for {url}. Did you mean http:// or https://?"
+    except requests.exceptions.ConnectionError as e:
+        return f"Error: Could not connect to {url}: {e}"
+    except requests.exceptions.Timeout:
+        return f"Error: Request to {url} timed out."
     except requests.exceptions.RequestException as e:
         return f"Error making API request to {url}: {e}"
 
@@ -351,7 +357,7 @@ def generate_from_template(template_string, variables):
     except KeyError as e:
         return f"Error: Missing variable in template: {e}"
     except Exception as e:
-        return f"An error occurred during template generation: {e}"
+        return f"An unexpected error occurred during template generation: {e}"
 
 def read_csv_file(file_path):
     """Reads a CSV file and returns its content as a list of lists (rows)."""
