@@ -23,7 +23,7 @@ def write_file(path, content):
 def run_shell_command(command):
     """Runs a shell command."""
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
-    return f"STDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
+    return f"STDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}\nEXIT_CODE: {result.returncode}"
 
 tools = [
     list_files,
