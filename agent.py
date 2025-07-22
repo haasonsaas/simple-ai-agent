@@ -293,6 +293,27 @@ def write_xml_file(file_path, content):
     except Exception as e:
         return f"An error occurred while writing XML: {e}"
 
+SCRATCHPAD_FILE = "agent_scratchpad.txt"
+
+def read_scratchpad():
+    """Reads the content of the agent's scratchpad file."""
+    try:
+        with open(SCRATCHPAD_FILE, 'r') as f:
+            return f.read()
+    except FileNotFoundError:
+        return "Scratchpad file not found. It will be created when written to."
+    except Exception as e:
+        return f"An error occurred while reading scratchpad: {e}"
+
+def write_scratchpad(content):
+    """Writes content to the agent's scratchpad file."""
+    try:
+        with open(SCRATCHPAD_FILE, 'w') as f:
+            f.write(content)
+        return "Content written to scratchpad successfully."
+    except Exception as e:
+        return f"An error occurred while writing to scratchpad: {e}"
+
 tools = [
     list_files,
     read_file,
@@ -326,6 +347,8 @@ tools = [
     write_csv_file,
     read_xml_file,
     write_xml_file,
+    read_scratchpad,
+    write_scratchpad,
 ]
 
 
@@ -387,8 +410,12 @@ def main():
         "- `write_json_file(file_path, content)`: Writes a Python dictionary (or JSON string) to a JSON file.\n"
         "- `read_csv_file(file_path)`: Reads a CSV file and returns its content as a list of lists (rows).\n"
         "- `write_csv_file(file_path, data)`: Writes a list of lists (rows) to a CSV file.\n"
-        "- `read_xml_file(file_path)`: Reads an XML file and returns its content as a string.\n"
-        "- `write_xml_file(file_path, content)`: Writes XML content to a file.\n"
+        "- `read_xml_file(file_path)`: Reads an XML file and returns its content as a string.
+"        "- `write_xml_file(file_path, content)`: Writes XML content to a file.
+"        "- `read_scratchpad()`: Reads the content of the agent's scratchpad file.
+"        "- `write_scratchpad(content)`: Writes content to the agent's scratchpad file.
+"        "
+"        "Use the `read_scratchpad` and `write_scratchpad` tools to store and retrieve important information, thoughts, and plans that need to persist across turns or for complex multi-step tasks. This acts as your persistent memory.
         "- `git_status()`: Returns the status of the Git repository.\n"
         "- `git_diff()`: Shows changes between commits, working tree, etc.\n"
         "- `git_add(path=".")`: Stages changes for the next commit.\n"
