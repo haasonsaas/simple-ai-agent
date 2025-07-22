@@ -116,6 +116,12 @@ def format_code(file_path):
     except Exception as e:
         return f"Error formatting {file_path}: {e}"
 
+def lint_code(file_path):
+    """Lints a Python code file using Flake8."""
+    command = f"flake8 {file_path}"
+    result = run_shell_command(command)
+    return result
+
 tools = [
     list_files,
     read_file,
@@ -130,6 +136,7 @@ tools = [
     fetch_url,
     change_directory,
     format_code,
+    lint_code,
 ]
 
 

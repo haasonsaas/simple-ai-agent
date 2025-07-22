@@ -3,3 +3,4 @@ duckduckgo-search
 PyPDF2
 requests
 black
+flake8
