@@ -1,6 +1,7 @@
 
 import os
 import subprocess
+from duckduckgo_search import DDGS
 import google.generativeai as genai
 
 # --- Tool Definitions ---
@@ -38,12 +39,19 @@ def run_shell_command(command):
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     return f"STDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}\nEXIT_CODE: {result.returncode}"
 
+def web_search(query):
+    """Performs a web search using DuckDuckGo."""
+    with DDGS() as ddgs:
+        results = [r for r in ddgs.text(query, max_results=5)]
+    return "\n".join([str(r) for r in results])
+
 tools = [
     list_files,
     read_file,
     write_file,
     search_file_content,
     run_shell_command,
+    web_search,
 ]
 
 
