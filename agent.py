@@ -213,6 +213,25 @@ def git_pull(remote="origin", branch="main"):
     result = run_shell_command(command)
     return result
 
+def make_api_request(method, url, headers=None, data=None, json=None):
+    """Makes an HTTP request to a given URL."""
+    try:
+        if method.upper() == "GET":
+            response = requests.get(url, headers=headers)
+        elif method.upper() == "POST":
+            response = requests.post(url, headers=headers, data=data, json=json)
+        elif method.upper() == "PUT":
+            response = requests.put(url, headers=headers, data=data, json=json)
+        elif method.upper() == "DELETE":
+            response = requests.delete(url, headers=headers)
+        else:
+            return f"Error: Unsupported HTTP method: {method}"
+
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        return response.text
+    except requests.exceptions.RequestException as e:
+        return f"Error making API request to {url}: {e}"
+
 tools = [
     list_files,
     read_file,
@@ -240,6 +259,7 @@ tools = [
     install_python_package,
     git_push,
     git_pull,
+    make_api_request,
 ]
 
 
