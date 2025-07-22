@@ -6,6 +6,7 @@ import requests
 import glob
 import json
 import argparse
+import csv
 from duckduckgo_search import DDGS
 import google.generativeai as genai
 import PyPDF2
@@ -242,6 +243,27 @@ def generate_from_template(template_string, variables):
     except Exception as e:
         return f"An error occurred during template generation: {e}"
 
+def read_csv_file(file_path):
+    """Reads a CSV file and returns its content as a list of lists (rows)."""
+    try:
+        with open(file_path, 'r', newline='') as f:
+            reader = csv.reader(f)
+            return list(reader)
+    except FileNotFoundError:
+        return f"Error: CSV file not found at {file_path}"
+    except Exception as e:
+        return f"An error occurred while reading CSV: {e}"
+
+def write_csv_file(file_path, data):
+    """Writes a list of lists (rows) to a CSV file."""
+    try:
+        with open(file_path, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerows(data)
+        return f"CSV data written successfully to {file_path}."
+    except Exception as e:
+        return f"An error occurred while writing CSV: {e}"
+
 tools = [
     list_files,
     read_file,
@@ -271,6 +293,8 @@ tools = [
     git_pull,
     make_api_request,
     generate_from_template,
+    read_csv_file,
+    write_csv_file,
 ]
 
 
