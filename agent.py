@@ -368,7 +368,7 @@ def read_csv_file(file_path):
     except FileNotFoundError:
         return f"Error: CSV file not found at {file_path}"
     except Exception as e:
-        return f"An error occurred while reading CSV: {e}"
+        return f"An unexpected error occurred while reading CSV: {e}"
 
 def write_csv_file(file_path, data):
     """Writes a list of lists (rows) to a CSV file."""
@@ -378,7 +378,7 @@ def write_csv_file(file_path, data):
             writer.writerows(data)
         return f"CSV data written successfully to {file_path}."
     except Exception as e:
-        return f"An error occurred while writing CSV: {e}"
+        return f"An unexpected error occurred while writing CSV: {e}"
 
 def read_xml_file(file_path):
     """Reads an XML file and returns its content as a string."""
@@ -391,7 +391,7 @@ def read_xml_file(file_path):
     except ET.ParseError as e:
         return f"Error parsing XML file {file_path}: {e}"
     except Exception as e:
-        return f"An error occurred while reading XML: {e}"
+        return f"An unexpected error occurred while reading XML: {e}"
 
 def write_xml_file(file_path, content):
     """Writes XML content to a file."""
@@ -406,7 +406,7 @@ def write_xml_file(file_path, content):
         tree.write(file_path, encoding='unicode', xml_declaration=True)
         return f"XML data written successfully to {file_path}."
     except Exception as e:
-        return f"An error occurred while writing XML: {e}"
+        return f"An unexpected error occurred while writing XML: {e}"
 
 SCRATCHPAD_FILE = "agent_scratchpad.txt"
 
