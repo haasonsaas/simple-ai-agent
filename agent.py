@@ -122,6 +122,16 @@ def lint_code(file_path):
     result = run_shell_command(command)
     return result
 
+def run_python_code(code):
+    """Runs a string of Python code and returns its output."""
+    try:
+        result = subprocess.run(['python3', '-c', code], capture_output=True, text=True, check=True)
+        return f"STDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}\nEXIT_CODE: {result.returncode}"
+    except subprocess.CalledProcessError as e:
+        return f"Error executing Python code:\nSTDOUT:\n{e.stdout}\nSTDERR:\n{e.stderr}\nEXIT_CODE: {e.returncode}"
+    except Exception as e:
+        return f"An unexpected error occurred: {e}"
+
 tools = [
     list_files,
     read_file,
@@ -137,6 +147,7 @@ tools = [
     change_directory,
     format_code,
     lint_code,
+    run_python_code,
 ]
 
 
