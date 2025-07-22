@@ -183,14 +183,23 @@ def format_code(file_path):
             return f"Formatted {file_path}."
         else:
             return f"No changes needed for {file_path}."
+    except black.InvalidInput as e:
+        return f"Error: Invalid input for Black formatter for {file_path}: {e}"
+    except FileNotFoundError:
+        return f"Error: File not found at {file_path}"
     except Exception as e:
-        return f"Error formatting {file_path}: {e}"
+        return f"An unexpected error occurred while formatting {file_path}: {e}"
 
 def lint_code(file_path):
     """Lints a Python code file using Flake8."""
-    command = f"flake8 {file_path}"
-    result = run_shell_command(command)
-    return result
+    try:
+        command = f"flake8 {file_path}"
+        result = run_shell_command(command)
+        return result
+    except FileNotFoundError:
+        return f"Error: Flake8 not found. Please install it using 'pip install flake8'."
+    except Exception as e:
+        return f"An unexpected error occurred while linting {file_path}: {e}"
 
 def run_python_code(code):
     """Runs a string of Python code and returns its output."""
@@ -199,8 +208,11 @@ def run_python_code(code):
         return f"STDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}\nEXIT_CODE: {result.returncode}"
     except subprocess.CalledProcessError as e:
         return f"Error executing Python code:\nSTDOUT:\n{e.stdout}\nSTDERR:\n{e.stderr}\nEXIT_CODE: {e.returncode}"
+    except FileNotFoundError:
+        return "Error: python3 command not found. Please ensure Python is installed and in your PATH."
     except Exception as e:
         return f"An unexpected error occurred: {e}"
+
 
 def glob_files(pattern):
     """Finds files matching a given glob pattern."""
