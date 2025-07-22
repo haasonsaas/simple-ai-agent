@@ -2,3 +2,4 @@ google-generativeai
 duckduckgo-search
 PyPDF2
 requests
+black

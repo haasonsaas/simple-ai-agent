@@ -6,6 +6,7 @@ import requests
 from duckduckgo_search import DDGS
 import google.generativeai as genai
 import PyPDF2
+import black
 
 # --- Tool Definitions ---
 
@@ -99,6 +100,22 @@ def change_directory(path):
     except Exception as e:
         return f"An error occurred: {e}"
 
+def format_code(file_path):
+    """Formats a Python code file using Black."""
+    try:
+        result = black.format_file_in_place(
+            black.Path(file_path),
+            fast=True,
+            mode=black.FileMode(),
+            write_back=black.WriteBack.YES,
+        )
+        if result:
+            return f"Formatted {file_path}."
+        else:
+            return f"No changes needed for {file_path}."
+    except Exception as e:
+        return f"Error formatting {file_path}: {e}"
+
 tools = [
     list_files,
     read_file,
@@ -112,6 +129,7 @@ tools = [
     read_pdf,
     fetch_url,
     change_directory,
+    format_code,
 ]
 
 
