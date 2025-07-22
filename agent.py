@@ -17,18 +17,37 @@ import black
 
 def list_files(path="."):
     """Lists files and directories in a given path."""
-    return os.listdir(path)
+    try:
+        return os.listdir(path)
+    except FileNotFoundError:
+        return f"Error: Directory not found at {path}"
+    except NotADirectoryError:
+        return f"Error: {path} is not a directory."
+    except Exception as e:
+        return f"An unexpected error occurred while listing files in {path}: {e}"
 
 def read_file(path):
     """Reads the content of a file."""
-    with open(path, "r") as f:
-        return f.read()
+    try:
+        with open(path, "r") as f:
+            return f.read()
+    except FileNotFoundError:
+        return f"Error: File not found at {path}"
+    except IsADirectoryError:
+        return f"Error: {path} is a directory, not a file."
+    except Exception as e:
+        return f"An unexpected error occurred while reading {path}: {e}"
 
 def write_file(path, content):
     """Writes content to a file."""
-    with open(path, "w") as f:
-        f.write(content)
-    return f"File '{path}' written successfully."
+    try:
+        with open(path, "w") as f:
+            f.write(content)
+        return f"File '{path}' written successfully."
+    except IsADirectoryError:
+        return f"Error: {path} is a directory, cannot write to it."
+    except Exception as e:
+        return f"An unexpected error occurred while writing to {path}: {e}"
 
 def search_file_content(file_path, search_string):
     """Searches for a string within a file and returns matching lines."""
@@ -56,21 +75,44 @@ def web_search(query):
 
 def create_directory(path):
     """Creates a new directory."""
-    os.makedirs(path, exist_ok=True)
-    return f"Directory '{path}' created successfully."
+    try:
+        os.makedirs(path, exist_ok=True)
+        return f"Directory '{path}' created successfully."
+    except OSError as e:
+        return f"Error creating directory {path}: {e}"
+    except Exception as e:
+        return f"An unexpected error occurred while creating directory {path}: {e}"
 
 def move_file(source, destination):
     """Moves or renames a file or directory."""
-    shutil.move(source, destination)
-    return f"Moved '{source}' to '{destination}'."
+    try:
+        shutil.move(source, destination)
+        return f"Moved '{source}' to '{destination}'."
+    except FileNotFoundError:
+        return f"Error: Source file or directory not found at {source}"
+    except PermissionError:
+        return f"Error: Permission denied to move {source} to {destination}"
+    except shutil.Error as e:
+        return f"Error moving {source} to {destination}: {e}"
+    except Exception as e:
+        return f"An unexpected error occurred while moving {source} to {destination}: {e}"
 
 def delete_file(path):
     """Deletes a file or directory."""
-    if os.path.isdir(path):
-        shutil.rmtree(path)
-    else:
-        os.remove(path)
-    return f"Deleted '{path}'."
+    try:
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+        else:
+            os.remove(path)
+        return f"Deleted '{path}'."
+    except FileNotFoundError:
+        return f"Error: File or directory not found at {path}"
+    except PermissionError:
+        return f"Error: Permission denied to delete {path}"
+    except OSError as e:
+        return f"Error deleting {path}: {e}"
+    except Exception as e:
+        return f"An unexpected error occurred while deleting {path}: {e}"
 
 def read_pdf(file_path):
     """Reads text content from a PDF file."""
