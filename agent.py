@@ -418,7 +418,7 @@ def read_scratchpad():
     except FileNotFoundError:
         return "Scratchpad file not found. It will be created when written to."
     except Exception as e:
-        return f"An error occurred while reading scratchpad: {e}"
+        return f"An unexpected error occurred while reading scratchpad: {e}"
 
 def write_scratchpad(content):
     """Writes content to the agent's scratchpad file."""
@@ -427,7 +427,7 @@ def write_scratchpad(content):
             f.write(content)
         return "Content written to scratchpad successfully."
     except Exception as e:
-        return f"An error occurred while writing to scratchpad: {e}"
+        return f"An unexpected error occurred while writing to scratchpad: {e}"
 
 tools = [
     list_files,
