@@ -262,45 +262,67 @@ def write_json_file(file_path, content):
 
 def git_status():
     """Returns the status of the Git repository."""
-    command = "git status"
-    result = run_shell_command(command)
-    return result
+    try:
+        command = "git status"
+        result = run_shell_command(command)
+        return result
+    except Exception as e:
+        return f"Error getting Git status: {e}"
 
 def git_diff():
     """Shows changes between commits, working tree, etc."""
-    command = "git diff"
-    result = run_shell_command(command)
-    return result
+    try:
+        command = "git diff"
+        result = run_shell_command(command)
+        return result
+    except Exception as e:
+        return f"Error getting Git diff: {e}"
 
 def git_add(path="."):
     """Stages changes for the next commit."""
-    command = f"git add {path}"
-    result = run_shell_command(command)
-    return result
+    try:
+        command = f"git add {path}"
+        result = run_shell_command(command)
+        return result
+    except Exception as e:
+        return f"Error adding {path} to Git: {e}"
 
 def git_commit(message):
     """Records changes to the repository with a message."""
-    command = f"git commit -m \"{message}\""
-    result = run_shell_command(command)
-    return result
+    try:
+        command = f"git commit -m \"{message}\""
+        result = run_shell_command(command)
+        return result
+    except Exception as e:
+        return f"Error committing changes: {e}"
 
 def install_python_package(package_name):
     """Installs a Python package using pip."""
-    command = f"pip install {package_name}"
-    result = run_shell_command(command)
-    return result
+    try:
+        command = f"pip install {package_name}"
+        result = run_shell_command(command)
+        return result
+    except Exception as e:
+        return f"Error installing package {package_name}: {e}"
 
 def git_push(remote="origin", branch="main"):
     """Pushes committed changes to a remote repository."""
-    command = f"git push {remote} {branch}"
-    result = run_shell_command(command)
-    return result
+    try:
+        command = f"git push {remote} {branch}"
+        result = run_shell_command(command)
+        return result
+    except Exception as e:
+        return f"Error pushing to {remote}/{branch}: {e}"
 
 def git_pull(remote="origin", branch="main"):
     """Fetches and integrates changes from a remote repository."""
-    command = f"git pull {remote} {branch}"
-    result = run_shell_command(command)
-    return result
+    try:
+        command = f"git pull {remote} {branch}"
+        result = run_shell_command(command)
+        return result
+    except Exception as e:
+        return f"Error pulling from {remote}/{branch}: {e}"
+
 
 def make_api_request(method, url, headers=None, data=None, json=None):
     """Makes an HTTP request to a given URL."""
