@@ -5,6 +5,7 @@ import subprocess
 import requests
 import glob
 import json
+import argparse
 from duckduckgo_search import DDGS
 import google.generativeai as genai
 import PyPDF2
@@ -247,6 +248,10 @@ tools = [
 def main():
     """Main function for the agent."""
 
+    parser = argparse.ArgumentParser(description="Run the Simple AI Agent.")
+    parser.add_argument("-p", "--prompt", type=str, help="Run in non-interactive mode with the given prompt.")
+    args = parser.parse_args()
+
     # Configure the Gemini API
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
@@ -260,16 +265,23 @@ def main():
         tools=tools,
     )
 
-    print("Simple AI Agent. Type 'exit' to quit.")
-    chat = model.start_chat(enable_automatic_function_calling=True)
+    if args.prompt:
+        # Non-interactive mode
+        chat = model.start_chat(enable_automatic_function_calling=True)
+        response = chat.send_message(args.prompt)
+        print(response.text)
+    else:
+        # Interactive mode
+        print("Simple AI Agent. Type 'exit' to quit.")
+        chat = model.start_chat(enable_automatic_function_calling=True)
 
-    while True:
-        user_input = input("You: ")
-        if user_input.lower() == "exit":
-            break
+        while True:
+            user_input = input("You: ")
+            if user_input.lower() == "exit":
+                break
 
-        response = chat.send_message(user_input)
-        print(f"Agent: {response.text}")
+            response = chat.send_message(user_input)
+            print(f"Agent: {response.text}")
 
 if __name__ == "__main__":
     main()
