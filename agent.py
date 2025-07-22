@@ -191,7 +191,7 @@ def git_add(path="."):
 
 def git_commit(message):
     """Records changes to the repository with a message."""
-    command = f"git commit -m \"{message}\"
+    command = f"git commit -m \"{message}\""
     result = run_shell_command(command)
     return result
 
