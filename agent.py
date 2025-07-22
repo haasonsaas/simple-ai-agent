@@ -216,13 +216,21 @@ def run_python_code(code):
 
 def glob_files(pattern):
     """Finds files matching a given glob pattern."""
-    return glob.glob(pattern)
+    try:
+        return glob.glob(pattern)
+    except Exception as e:
+        return f"An unexpected error occurred while globbing files with pattern {pattern}: {e}"
 
 def run_tests(path):
     """Runs pytest for a given file or directory."""
-    command = f"pytest {path}"
-    result = run_shell_command(command)
-    return result
+    try:
+        command = f"pytest {path}"
+        result = run_shell_command(command)
+        return result
+    except FileNotFoundError:
+        return f"Error: pytest not found. Please install it using 'pip install pytest'."
+    except Exception as e:
+        return f"An unexpected error occurred while running tests for {path}: {e}"
 
 def read_json_file(file_path):
     """Reads a JSON file and returns its content as a Python dictionary."""
@@ -235,7 +243,7 @@ def read_json_file(file_path):
     except json.JSONDecodeError:
         return f"Error: Invalid JSON format in {file_path}"
     except Exception as e:
-        return f"An error occurred: {e}"
+        return f"An unexpected error occurred while reading JSON: {e}"
 
 def write_json_file(file_path, content):
     """Writes a Python dictionary (or JSON string) to a JSON file."""
@@ -247,8 +255,10 @@ def write_json_file(file_path, content):
                 data = content # Assume content is a Python dictionary
             json.dump(data, f, indent=2)
         return f"JSON data written successfully to {file_path}."
+    except TypeError as e:
+        return f"Error: Invalid content type for JSON writing to {file_path}: {e}. Content must be a dictionary or a JSON string."
     except Exception as e:
-        return f"An error occurred: {e}"
+        return f"An unexpected error occurred while writing JSON: {e}"
 
 def git_status():
     """Returns the status of the Git repository."""
