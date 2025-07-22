@@ -137,6 +137,12 @@ def glob_files(pattern):
     """Finds files matching a given glob pattern."""
     return glob.glob(pattern)
 
+def run_tests(path):
+    """Runs pytest for a given file or directory."""
+    command = f"pytest {path}"
+    result = run_shell_command(command)
+    return result
+
 tools = [
     list_files,
     read_file,
@@ -154,6 +160,7 @@ tools = [
     lint_code,
     run_python_code,
     glob_files,
+    run_tests,
 ]
 
 
