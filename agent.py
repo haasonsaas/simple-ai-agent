@@ -20,6 +20,19 @@ def write_file(path, content):
         f.write(content)
     return f"File '{path}' written successfully."
 
+def search_file_content(file_path, search_string):
+    """Searches for a string within a file and returns matching lines."""
+    try:
+        with open(file_path, 'r') as f:
+            matching_lines = [line.strip() for line in f if search_string in line]
+        if not matching_lines:
+            return "No matching lines found."
+        return "\n".join(matching_lines)
+    except FileNotFoundError:
+        return f"Error: File not found at {file_path}"
+    except Exception as e:
+        return f"An error occurred: {e}"
+
 def run_shell_command(command):
     """Runs a shell command."""
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
@@ -29,8 +42,10 @@ tools = [
     list_files,
     read_file,
     write_file,
+    search_file_content,
     run_shell_command,
 ]
+
 
 # --- Agent Logic ---
 
