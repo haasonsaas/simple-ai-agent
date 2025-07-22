@@ -232,6 +232,16 @@ def make_api_request(method, url, headers=None, data=None, json=None):
     except requests.exceptions.RequestException as e:
         return f"Error making API request to {url}: {e}"
 
+def generate_from_template(template_string, variables):
+    """Generates content from a template string using provided variables."""
+    try:
+        # Use f-string formatting for simple templating
+        return template_string.format(**variables)
+    except KeyError as e:
+        return f"Error: Missing variable in template: {e}"
+    except Exception as e:
+        return f"An error occurred during template generation: {e}"
+
 tools = [
     list_files,
     read_file,
@@ -260,6 +270,7 @@ tools = [
     git_push,
     git_pull,
     make_api_request,
+    generate_from_template,
 ]
 
 
