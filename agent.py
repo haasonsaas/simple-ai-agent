@@ -190,7 +190,13 @@ def git_add(path="."):
 
 def git_commit(message):
     """Records changes to the repository with a message."""
-    command = f"git commit -m \"{message}\""
+    command = f"git commit -m \"{message}\"
+    result = run_shell_command(command)
+    return result
+
+def install_python_package(package_name):
+    """Installs a Python package using pip."""
+    command = f"pip install {package_name}"
     result = run_shell_command(command)
     return result
 
@@ -218,6 +224,7 @@ tools = [
     git_diff,
     git_add,
     git_commit,
+    install_python_package,
 ]
 
 
