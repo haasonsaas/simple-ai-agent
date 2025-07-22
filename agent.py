@@ -411,12 +411,12 @@ def main():
         "- `write_json_file(file_path, content)`: Writes a Python dictionary (or JSON string) to a JSON file.\n"
         "- `read_csv_file(file_path)`: Reads a CSV file and returns its content as a list of lists (rows).\n"
         "- `write_csv_file(file_path, data)`: Writes a list of lists (rows) to a CSV file.\n"
-        "- `read_xml_file(file_path)`: Reads an XML file and returns its content as a string.
-"        "- `write_xml_file(file_path, content)`: Writes XML content to a file.
-"        "- `read_scratchpad()`: Reads the content of the agent's scratchpad file.
-"        "- `write_scratchpad(content)`: Writes content to the agent's scratchpad file.
-"        "
-"        "Use the `read_scratchpad` and `write_scratchpad` tools to store and retrieve important information, thoughts, and plans that need to persist across turns or for complex multi-step tasks. This acts as your persistent memory.
+        "- `read_xml_file(file_path)`: Reads an XML file and returns its content as a string.\n"
+        "- `write_xml_file(file_path, content)`: Writes XML content to a file.\n"
+        "- `read_scratchpad()`: Reads the content of the agent's scratchpad file.\n"
+        "- `write_scratchpad(content)`: Writes content to the agent's scratchpad file.\n"
+        "\n"
+        "Use the `read_scratchpad` and `write_scratchpad` tools to store and retrieve important information, thoughts, and plans that need to persist across turns or for complex multi-step tasks. This acts as your persistent memory.\n"
         "- `git_status()`: Returns the status of the Git repository.\n"
         "- `git_diff()`: Shows changes between commits, working tree, etc.\n"
         "- `git_add(path=".")`: Stages changes for the next commit.\n"
