@@ -2,6 +2,7 @@
 import os
 import shutil
 import subprocess
+import requests
 from duckduckgo_search import DDGS
 import google.generativeai as genai
 import PyPDF2
@@ -79,6 +80,15 @@ def read_pdf(file_path):
     except Exception as e:
         return f"An error occurred while reading PDF: {e}"
 
+def fetch_url(url):
+    """Fetches content from a given URL."""
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        return response.text
+    except requests.exceptions.RequestException as e:
+        return f"Error fetching URL {url}: {e}"
+
 tools = [
     list_files,
     read_file,
@@ -90,6 +100,7 @@ tools = [
     move_file,
     delete_file,
     read_pdf,
+    fetch_url,
 ]
 
 
