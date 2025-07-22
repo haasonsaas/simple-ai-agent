@@ -89,6 +89,16 @@ def fetch_url(url):
     except requests.exceptions.RequestException as e:
         return f"Error fetching URL {url}: {e}"
 
+def change_directory(path):
+    """Changes the current working directory."""
+    try:
+        os.chdir(path)
+        return f"Changed directory to {os.getcwd()}"
+    except FileNotFoundError:
+        return f"Error: Directory not found at {path}"
+    except Exception as e:
+        return f"An error occurred: {e}"
+
 tools = [
     list_files,
     read_file,
@@ -101,6 +111,7 @@ tools = [
     delete_file,
     read_pdf,
     fetch_url,
+    change_directory,
 ]
 
 
