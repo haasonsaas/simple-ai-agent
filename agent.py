@@ -200,6 +200,18 @@ def install_python_package(package_name):
     result = run_shell_command(command)
     return result
 
+def git_push(remote="origin", branch="main"):
+    """Pushes committed changes to a remote repository."""
+    command = f"git push {remote} {branch}"
+    result = run_shell_command(command)
+    return result
+
+def git_pull(remote="origin", branch="main"):
+    """Fetches and integrates changes from a remote repository."""
+    command = f"git pull {remote} {branch}"
+    result = run_shell_command(command)
+    return result
+
 tools = [
     list_files,
     read_file,
@@ -225,6 +237,8 @@ tools = [
     git_add,
     git_commit,
     install_python_package,
+    git_push,
+    git_pull,
 ]
 
 
