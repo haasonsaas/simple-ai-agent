@@ -13,6 +13,7 @@ env/
 .agent_conversations/
 .agent_scratchpad.md
 .claude/
+.agent_cache/
 
 # IDE
 .vscode/

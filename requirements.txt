@@ -8,3 +8,7 @@ pytest
 pyyaml
 aiofiles
 tiktoken
+aiohttp
+uvloop
+matplotlib
+numpy
