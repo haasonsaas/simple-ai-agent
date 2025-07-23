@@ -1,0 +1,65 @@
+# Enhanced AI Agent Configuration
+
+# Model settings
+model:
+  provider: gemini
+  name: gemini-1.5-flash
+  temperature: 0.7
+  max_tokens: 100000
+
+# Safety settings
+safety:
+  confirm_destructive: true
+  max_file_size: 10485760  # 10MB in bytes
+  allowed_commands: []
+  blocked_commands:
+    - "rm -rf /"
+    - "format"
+    - "del /f"
+
+# Tool settings
+tools:
+  # Enable/disable entire categories
+  categories:
+    file: true
+    system: true
+    web: true
+    code: true
+    git: true
+    data: true
+    utility: true
+    memory: true
+  
+  # Override specific tools (optional)
+  overrides:
+    # Example: disable specific dangerous tools
+    # delete_file:
+    #   enabled: false
+    # run_shell_command:
+    #   enabled: true
+    #   requires_confirmation: true
+
+# Logging settings
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: agent.log
+  console: true
+
+# Conversation settings
+conversation:
+  storage_dir: .agent_conversations
+  auto_save: true
+  max_history: 100
+
+# Context management
+context:
+  max_tokens: 100000
+  model: gpt-4  # Used for token counting
+  trim_strategy: oldest_first  # or 'summarize'
+
+# Plugin settings (future feature)
+plugins:
+  enabled: false
+  directory: plugins/
+  auto_load: true
