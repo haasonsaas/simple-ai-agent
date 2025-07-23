@@ -324,15 +324,15 @@ def git_pull(remote="origin", branch="main"):
         return f"Error pulling from {remote}/{branch}: {e}"
 
 
-def make_api_request(method, url, headers=None, data=None, json=None):
+def make_api_request(method, url, headers=None, data=None, json_data=None):
     """Makes an HTTP request to a given URL."""
     try:
         if method.upper() == "GET":
             response = requests.get(url, headers=headers)
         elif method.upper() == "POST":
-            response = requests.post(url, headers=headers, data=data, json=json)
+            response = requests.post(url, headers=headers, data=data, json=json_data)
         elif method.upper() == "PUT":
-            response = requests.put(url, headers=headers, data=data, json=json)
+            response = requests.put(url, headers=headers, data=data, json=json_data)
         elif method.upper() == "DELETE":
             response = requests.delete(url, headers=headers)
         else:
@@ -483,12 +483,6 @@ def main():
         return
     genai.configure(api_key=api_key)
 
-    # Create the model
-    model = genai.GenerativeModel(
-        "gemini-1.5-flash",
-        tools=tools,
-    )
-
     system_instruction = (
         "You are a highly capable AI agent designed to assist with software engineering tasks.\n"
         "You have access to a wide range of tools to interact with the file system, web, code, and Git.\n"
@@ -504,8 +498,7 @@ def main():
         "**Response:** Once the task is complete, provide a clear, concise, and helpful answer to the user, summarizing the actions taken and the outcome.\n"
         "\n"
         "Available tools and their descriptions:\n"
-        "- `list_files(path=".")`: Lists files and directories in a given path.
-"
+        "- `list_files(path='.')`: Lists files and directories in a given path.\n"
         "- `read_file(path)`: Reads the content of a file.\n"
         "- `write_file(path, content)`: Writes content to a file.\n"
         "- `search_file_content(file_path, search_string)`: Searches for a string within a file and returns matching lines.\n"
@@ -534,24 +527,31 @@ def main():
         "Use the `read_scratchpad` and `write_scratchpad` tools to store and retrieve important information, thoughts, and plans that need to persist across turns or for complex multi-step tasks. This acts as your persistent memory.\n"
         "- `git_status()`: Returns the status of the Git repository.\n"
         "- `git_diff()`: Shows changes between commits, working tree, etc.\n"
-        "- `git_add(path=".")`: Stages changes for the next commit.\n"
+        "- `git_add(path='.')`: Stages changes for the next commit.\n"
         "- `git_commit(message)`: Records changes to the repository with a message.\n"
         "- `install_python_package(package_name)`: Installs a Python package using pip.\n"
-        "- `git_push(remote="origin", branch="main")`: Pushes committed changes to a remote repository.\n"
-        "- `git_pull(remote="origin", branch="main")`: Fetches and integrates changes from a remote repository.\n"
-        "- `make_api_request(method, url, headers=None, data=None, json=None)`: Makes an HTTP request to a given URL.\n"
+        "- `git_push(remote='origin', branch='main')`: Pushes committed changes to a remote repository.\n"
+        "- `git_pull(remote='origin', branch='main')`: Fetches and integrates changes from a remote repository.\n"
+        "- `make_api_request(method, url, headers=None, data=None, json_data=None)`: Makes an HTTP request to a given URL.\n"
         "- `generate_from_template(template_string, variables)`: Generates content from a template string using provided variables.\n"
+    )
+
+    # Create the model
+    model = genai.GenerativeModel(
+        "gemini-1.5-flash",
+        tools=tools,
+        system_instruction=system_instruction,
     )
 
     if args.prompt:
         # Non-interactive mode
-        chat = model.start_chat(enable_automatic_function_calling=True, system_instruction=system_instruction)
+        chat = model.start_chat(enable_automatic_function_calling=True)
         response = chat.send_message(args.prompt)
         print(response.text)
     else:
         # Interactive mode
         print("Simple AI Agent. Type 'exit' to quit.")
-        chat = model.start_chat(enable_automatic_function_calling=True, system_instruction=system_instruction)
+        chat = model.start_chat(enable_automatic_function_calling=True)
 
         while True:
             user_input = input("You: ")
