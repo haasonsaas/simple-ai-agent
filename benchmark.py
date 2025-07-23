@@ -12,18 +12,30 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def run_agent_test(agent_script: str, prompt: str) -> float:
-    """Run a single test and return execution time."""
+import os
+import sys
+
+def run_agent_benchmark(agent_script: str, prompts: List[str]) -> float:
+    """Run a benchmark from a file and return total execution time."""
+    # Create a temporary file with the benchmark prompts
+    with open("benchmark_prompts.txt", "w") as f:
+        for prompt in prompts:
+            f.write(f"{prompt}\n")
+
     start = time.perf_counter()
     
     result = subprocess.run(
-        ["python3", agent_script, "-p", prompt],
+        [sys.executable, agent_script, "--benchmark", "benchmark_prompts.txt"],
         capture_output=True,
-        text=True
+        text=True,
+        env=os.environ
     )
     
     duration = time.perf_counter() - start
     
+    # Cleanup the temporary file
+    os.remove("benchmark_prompts.txt")
+
     if result.returncode != 0:
         print(f"Error running {agent_script}: {result.stderr}")
         return -1
@@ -35,89 +47,74 @@ async def benchmark_operations():
     """Run comprehensive benchmarks."""
     
     test_prompts = [
-        "List all Python files in the current directory",
-        "Read the content of requirements.txt",
-        "Create a file called benchmark_test.txt with content: Speed test",
-        "Search the web for: Python asyncio tutorial",
-        "What is 2 + 2?",
-        "Read config.yaml and tell me the model name",
+        "list_files .",
+        "list_files .",
+        "list_files .",
+        "list_files .",
+        "list_files .",
+        "read_file requirements.txt",
+        "read_file requirements.txt",
+        "read_file requirements.txt",
+        "read_file requirements.txt",
+        "read_file requirements.txt",
+        "web_search Python asyncio tutorial",
+        "web_search Python asyncio tutorial",
+        "web_search Python asyncio tutorial",
+        "fetch_url https://www.google.com",
+        "fetch_url https://www.google.com",
+        "fetch_url https://www.google.com",
+        "write_file benchmark_test.txt Speed test",
     ]
     
     print("AI Agent Performance Benchmark")
     print("=" * 80)
     
-    results = {
-        "original": [],
-        "fast": []
-    }
-    
-    # Test original agent
-    print("\nTesting Original Agent...")
-    for i, prompt in enumerate(test_prompts, 1):
-        print(f"  Test {i}/{len(test_prompts)}: {prompt[:50]}...")
-        duration = run_agent_test("agent.py", prompt)
-        if duration > 0:
-            results["original"].append(duration)
-            print(f"    Time: {duration:.3f}s")
-    
-    # Test fast agent
-    print("\nTesting Fast Agent...")
-    for i, prompt in enumerate(test_prompts, 1):
-        print(f"  Test {i}/{len(test_prompts)}: {prompt[:50]}...")
-        duration = run_agent_test("agent_fast.py", prompt)
-        if duration > 0:
-            results["fast"].append(duration)
-            print(f"    Time: {duration:.3f}s")
+    # Test original agent (agent_slow.py)
+    print("\nTesting Original Agent (agent_slow.py)...")
+    original_duration = run_agent_benchmark("agent_slow.py", test_prompts)
+    if original_duration > 0:
+        print(f"  Total Time: {original_duration:.3f}s")
+
+    # Test fast agent (agent.py)
+    print("\nTesting Fast Agent (agent.py)...")
+    fast_duration = run_agent_benchmark("agent.py", test_prompts)
+    if fast_duration > 0:
+        print(f"  Total Time: {fast_duration:.3f}s")
     
     # Calculate statistics
     print("\n" + "=" * 80)
     print("RESULTS SUMMARY")
     print("=" * 80)
     
-    if results["original"] and results["fast"]:
-        orig_avg = statistics.mean(results["original"])
-        fast_avg = statistics.mean(results["fast"])
-        speedup = orig_avg / fast_avg
-        
-        print(f"\nOriginal Agent:")
-        print(f"  Average: {orig_avg:.3f}s")
-        print(f"  Min: {min(results['original']):.3f}s")
-        print(f"  Max: {max(results['original']):.3f}s")
-        
-        print(f"\nFast Agent:")
-        print(f"  Average: {fast_avg:.3f}s")
-        print(f"  Min: {min(results['fast']):.3f}s")
-        print(f"  Max: {max(results['fast']):.3f}s")
-        
+    if original_duration > 0 and fast_duration > 0:
+        speedup = original_duration / fast_duration
+        print(f"\nOriginal Agent Total Time: {original_duration:.3f}s")
+        print(f"Fast Agent Total Time: {fast_duration:.3f}s")
         print(f"\nSPEEDUP: {speedup:.2f}x faster")
-        print(f"Time saved per operation: {orig_avg - fast_avg:.3f}s ({(1 - fast_avg/orig_avg)*100:.1f}%)")
-        
+        print(f"Time saved: {original_duration - fast_duration:.3f}s ({(1 - fast_duration/original_duration)*100:.1f}%)")
+
         # Create visualization
-        create_benchmark_chart(results, speedup)
-    
-    # Cleanup
-    subprocess.run(["rm", "-f", "benchmark_test.txt"], capture_output=True)
+        create_benchmark_chart(original_duration, fast_duration, speedup)
 
 
-def create_benchmark_chart(results: dict, speedup: float):
+
+def create_benchmark_chart(original_duration: float, fast_duration: float, speedup: float):
     """Create a performance comparison chart."""
     try:
         import matplotlib.pyplot as plt
         
-        labels = [f"Test {i}" for i in range(1, len(results["original"]) + 1)]
+        labels = ['Original Agent', 'Fast Agent']
+        durations = [original_duration, fast_duration]
         x = np.arange(len(labels))
-        width = 0.35
         
-        fig, ax = plt.subplots(figsize=(10, 6))
+        fig, ax = plt.subplots(figsize=(8, 6))
         
-        rects1 = ax.bar(x - width/2, results["original"], width, label='Original Agent')
-        rects2 = ax.bar(x + width/2, results["fast"], width, label='Fast Agent')
+        rects = ax.bar(x, durations, width=0.35)
         
-        ax.set_ylabel('Execution Time (seconds)')
+        ax.set_ylabel('Total Execution Time (seconds)')
         ax.set_title(f'Agent Performance Comparison (Fast agent is {speedup:.2f}x faster)')
         ax.set_xticks(x)
         ax.set_xticklabels(labels)
-        ax.legend()
         
         # Add value labels on bars
         def autolabel(rects):
@@ -129,8 +126,7 @@ def create_benchmark_chart(results: dict, speedup: float):
                            textcoords="offset points",
                            ha='center', va='bottom')
         
-        autolabel(rects1)
-        autolabel(rects2)
+        autolabel(rects)
         
         fig.tight_layout()
         plt.savefig('benchmark_results.png')
@@ -183,6 +179,9 @@ def theoretical_improvements():
 if __name__ == "__main__":
     print("Starting performance benchmarks...")
     
+    # Set a dummy API key for local tests
+    os.environ['GEMINI_API_KEY'] = 'DUMMY_KEY'
+
     # Show theoretical improvements first
     theoretical_improvements()
     

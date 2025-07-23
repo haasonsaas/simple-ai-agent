@@ -37,31 +37,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-# --- Manual Cache System ---
+# --- Simple Cache System ---
 
-class ManualCache:
-    def __init__(self, max_size=1000):
-        self.cache = {}
-        self.max_size = max_size
-        self.keys = []
-
-    def get(self, key):
-        return self.cache.get(key)
-
-    def set(self, key, value):
-        if key in self.cache:
-            self.keys.remove(key)
-        elif len(self.cache) >= self.max_size:
-            oldest_key = self.keys.pop(0)
-            del self.cache[oldest_key]
-        self.cache[key] = value
-        self.keys.append(key)
-
-    def clear(self):
-        self.cache = {}
-        self.keys = []
-
-manual_cache = ManualCache()
+# No cache for the slow version
 
 
 # --- Tool Definitions (Gemini-compatible) ---
@@ -69,15 +47,9 @@ manual_cache = ManualCache()
 # File Operations
 def list_files(path="."):
     """Lists files and directories in a given path."""
-    cache_key = f"list_files:{path}"
-    cached = manual_cache.get(cache_key)
-    if cached:
-        return cached
-    
     time.sleep(0.2) # Simulate a longer delay
     try:
         result = os.listdir(path)
-        manual_cache.set(cache_key, result) # Cache the result
         return result
     except FileNotFoundError:
         return f"Error: Directory not found at {path}"
@@ -87,21 +59,7 @@ def list_files(path="."):
 
 def read_file(path):
     """Reads the content of a file."""
-    cache_key = f"read_file:{path}"
-    cached = manual_cache.get(cache_key)
-    if cached:
-        return cached
-    
     time.sleep(0.2) # Simulate a longer delay
-    try:
-        with open(path, "r") as f:
-            content = f.read()
-        manual_cache.set(cache_key, content)  # Cache the content
-        return content
-    except FileNotFoundError:
-        return f"Error: File not found at {path}"
-    except Exception as e:
-        return f"Error reading file: {e}"
 
 
 def write_file(path, content):
@@ -110,7 +68,8 @@ def write_file(path, content):
         with open(path, "w") as f:
             f.write(content)
         # Invalidate cache for this file
-        manual_cache.clear() # Clear the entire cache as it's a simple implementation
+        cache_key = f"read_file:{path}"
+        cache.cache_clear() # Clear the entire cache as it's a simple implementation
         return f"File '{path}' written successfully."
     except Exception as e:
         return f"Error writing file: {e}"
@@ -191,11 +150,6 @@ def change_directory(path):
 # Web Operations
 def web_search(query):
     """Performs a web search using DuckDuckGo."""
-    cache_key = f"web_search:{query}"
-    cached = manual_cache.get(cache_key)
-    if cached:
-        return cached
-    
     time.sleep(1.0) # Simulate a longer delay
     try:
         with DDGS() as ddgs:
@@ -204,7 +158,6 @@ def web_search(query):
             return "No search results found."
         
         result_text = "\n".join([str(r) for r in results])
-        manual_cache.set(cache_key, result_text) # Cache the result
         return result_text
     except Exception as e:
         return f"Error during web search: {e}"
@@ -212,17 +165,11 @@ def web_search(query):
 
 def fetch_url(url):
     """Fetches content from a given URL."""
-    cache_key = f"fetch_url:{url}"
-    cached = manual_cache.get(cache_key)
-    if cached:
-        return cached
-    
-    time.sleep(1.0) # Simulate a longer delay
+    time.sleep(0.5) # Simulate a delay
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
         content = response.text
-        manual_cache.set(cache_key, content) # Cache the content
         return content
     except Exception as e:
         return f"Error fetching URL: {e}"
@@ -538,7 +485,6 @@ class FastAgent:
     def __init__(self, config_path: str = "config.yaml", local_only: bool = False):
         self.config = self._load_config(config_path)
         self.local_only = local_only
-        self.cache = manual_cache
         if not self.local_only:
             self._init_model()
     
